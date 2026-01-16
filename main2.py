@@ -104,7 +104,7 @@ dfRemaining = Remaining(dfRemainingInn, dfRemainingUt)
 # -----------------------------
 # Function to write to Excel safely using xlwings
 # -----------------------------
-def printxl(transactions, sheetname, start_cell, filename="russens-regnskap_helautomatisert15.xlsx", headers=True):
+def printxl(transactions, sheetname, start_cell, filename="Russens Regnskap Helautomatisert.xlsx", headers=True):
     # Open Excel app
     app = xw.App(visible=False)  # Change to True if you want to see Excel
     app.display_alerts = False   # Avoid popups
