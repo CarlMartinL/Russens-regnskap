@@ -12,12 +12,13 @@ df = pd.read_excel("Transaksjoner.xlsx", sheet_name="Transaksjoner")
 # Helper class to categorize data
 # -----------------------------
 class Categories:
-    def __init__(self, kidInn="¤#", kidUt="¤#", numrefInn="irrelevant", numrefUt="irrelevant"):
+    def __init__(self, kidInn="¤#", kidUt="¤#", numrefInn="irrelevant", numrefUt="irrelevant",Undertype="Irrelevant"):
         self.kidInn = kidInn
         self.kidUt = kidUt
         self.numrefInn = numrefInn
         self.numrefUt = numrefUt
         self.df = df
+        self.Undertype = Undertype
 
         allKids = [kidInn, kidUt]
         self.allKids = "|".join(map(str, allKids))
@@ -29,6 +30,7 @@ class Categories:
             df["Melding/KID/Fakt.nr"].str.contains(self.allKids, case=False, na=False)
             | df["Numref"].astype(str).str.contains(self.numrefInn, case=False, na=False)
             | df["Numref"].astype(str).str.contains(self.numrefUt, case=False, na=False)
+            | df["Undertype"].astype(str).str.contains(self.Undertype, case=False, na=False)
         ].copy()
         self.all["utført dato"] = pd.to_datetime(self.all["Utført dato"], format="%d.%m.%Y", errors="coerce")
         self.all = self.all.sort_values(by="Utført dato", ascending=False)
@@ -39,6 +41,7 @@ class Categories:
         self.inn = df[
             df["Melding/KID/Fakt.nr"].str.contains(self.kidInn, case=False, na=False)
             | df["Numref"].astype(str).str.contains(self.numrefInn, case=False, na=False)
+            | df["Undertype"].astype(str).str.contains(self.Undertype, case=False,na=False)
         ].copy()
         self.inn["utført dato"] = pd.to_datetime(self.inn["Utført dato"], format="%d.%m.%Y", errors="coerce")
         self.inn = self.inn.sort_values(by="Utført dato", ascending=False)
@@ -76,7 +79,7 @@ Drottningborgrussen = Categories("115851", "drottningborgrussen")
 Terminal_Nets = Categories("769821|5351127", "Terminal1")
 Kjøregodtgjørelse = Categories("ikke relevant", "kjør")
 Pant = Categories("pant")
-Misjonsløp = Categories("¤¤kidnummer uvist", "løputgift|iphone|soundbox|airpods|multimedia")
+Misjonsløp = Categories("¤¤kidnummer uvist", "løputgift|iphone|soundbox|airpods|multimedia",Undertype="OCR")
 Skole = Categories(numrefInn="33753760001", numrefUt="41418400000|79708430000")
 Bokbind = Categories(numrefInn="702660")
 Måneskinstur = Categories("625976", "månes")
@@ -92,7 +95,8 @@ df_filtered = pd.concat([
     Kiosk.all, Isruss.all, Milkshake.all, Pant.all, Basar.all, Terminal_Nets.all,
     Drottningborgrussen.all, Måneskinstur.all, Bokbind.all, Nattcup.all, Barrista.all,
     Skole.all, Misjonsløp.all, Kjøregodtgjørelse.all, Krympefest.all, Premier_leaugue.all, Redaksjonen.all
-])
+]).drop_duplicates()
+
 
 df_remaining = df.merge(df_filtered, how='outer', indicator=True)
 df_remaining = df_remaining[df_remaining['_merge'] == 'left_only'].drop(columns=['_merge'])
@@ -104,7 +108,7 @@ dfRemaining = Remaining(dfRemainingInn, dfRemainingUt)
 # -----------------------------
 # Function to write to Excel safely using xlwings
 # -----------------------------
-def printxl(transactions, sheetname, start_cell, filename="Russens Regnskap Helautomatisert.xlsx", headers=True):
+def printxl(transactions, sheetname, start_cell, filename="Regnskap/Russens Regnskap Helautomatisert.xlsx", headers=True):
     # Open Excel app
     app = xw.App(visible=False)  # Change to True if you want to see Excel
     app.display_alerts = False   # Avoid popups
@@ -166,14 +170,16 @@ printUtInn(Måneskinstur, "Måneskinstur")
 printUtInn(Pant, "Panteruss", "J12", "C12")
 printUtInn(Milkshake, "Milkshake")
 printUtInn(Barrista, "Barrista")
-printUtInn(Drottningborgrussen,"Master","N","Q5")
 printUtInn(Basar, "Basar")
 printUtInn(Nattcup, "Nattcup")
 printUtInn(Kjøregodtgjørelse, "Kjøregodtgjørelse", "R3", "N")
 printUtInn(Krympefest, "Krympefest")
 printUtInn(Premier_leaugue, "Premiere Leaugue")
 printUtInn(Redaksjonen, "Redaksjonen")
+
 printUtInn(dfRemaining, "Master", "AD5", "X5")
+printUtInn(Drottningborgrussen,"Master","N","Q5")
+
 
 # Individual category prints
 printxl(Misjonsløp.ut[["Beløp ut", "Mottakernavn", "Til konto", "Numref", "Utført dato", "Melding/KID/Fakt.nr"]], "Misjonsløp", "B10")
