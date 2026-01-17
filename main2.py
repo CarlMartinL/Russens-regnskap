@@ -95,7 +95,7 @@ df_filtered = pd.concat([
     Kiosk.all, Isruss.all, Milkshake.all, Pant.all, Basar.all, Terminal_Nets.all,
     Drottningborgrussen.all, Måneskinstur.all, Bokbind.all, Nattcup.all, Barrista.all,
     Skole.all, Misjonsløp.all, Kjøregodtgjørelse.all, Krympefest.all, Premier_leaugue.all, Redaksjonen.all
-]).drop_duplicates(subset="Numref")
+]).drop_duplicates()
 
 
 df_remaining = df.merge(df_filtered, how='outer', indicator=True)
@@ -160,7 +160,7 @@ def printUtInn(Kategori, sheet, kordUt="C12", kordInn="J12"):
 # -----------------------------
 # Write all categories to Excel
 # -----------------------------
-"""
+
 printUtInn(Kiosk,"Vippsutskrifter Python","N","A80")
 printUtInn(Kiosk,"Inn Kiosk Python", "A85","N")
 printUtInn(Terminal_Nets,"Terminalutskrifter Python","N","A80")
@@ -176,10 +176,12 @@ printUtInn(Kjøregodtgjørelse, "Kjøregodtgjørelse", "R3", "N")
 printUtInn(Krympefest, "Krympefest")
 printUtInn(Premier_leaugue, "Premiere Leaugue")
 printUtInn(Redaksjonen, "Redaksjonen")
-"""
 
-print(dfRemaining.inn)
+
+
 printUtInn(dfRemaining, "Master", "AD5", "X5")
+
+
 printUtInn(Drottningborgrussen,"Master","N","Q5")
 
 
