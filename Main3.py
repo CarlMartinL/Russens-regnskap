@@ -2,6 +2,24 @@
 import pandas as pd
 import xlwings as xw
 
+
+"""
+Åpne excel
+"""
+app = xw.App(visible=False)
+app.display_alerts = False
+
+filename = "Regnskap/Russens Regnskap Helautomatisert.xlsx"
+
+try:
+    wb = xw.Book(filename)
+except FileNotFoundError:
+    wb = xw.Book()
+    wb.save(filename)
+"""
+Ferdig å åpne excel
+"""
+
 # -----------------------------
 # Read transactions from Excel
 # -----------------------------
@@ -145,18 +163,16 @@ def printxl(transactions, sheetname, start_cell, filename="Regnskap/Russens Regn
     app.quit()  # Close Excel app
     print(f"✅ Data written to '{filename}' → sheet '{sheetname}' starting at {start_cell}")
 """
-def printxl(transactions, sheetname, start_cell, filename, headers=True):
-    app = xw.App(visible=False)
-    app.display_alerts = False
+def printxl(transactions, sheetname, start_cell,wb=wb, headers=True):
+    # Get or create sheet
+    if sheetname in [s.name for s in wb.sheets]:
+        ws = wb.sheets[sheetname]
+    else:
+        ws = wb.sheets.add(sheetname)
 
-    wb = xw.Book(filename)
-    ws = wb.sheets[sheetname] if sheetname in [s.name for s in wb.sheets] else wb.sheets.add(sheetname)
-
+    # FAST bulk write (also fixes step 1)
     ws.range(start_cell).options(index=False, header=headers).value = transactions
 
-    wb.save()
-    wb.close()
-    app.quit()
 
 
 
@@ -175,6 +191,7 @@ def printUtInn(Kategori, sheet, kordUt="C12", kordInn="J12"):
 # Write all categories to Excel
 # -----------------------------
 
+"""
 printUtInn(Kiosk,"Vippsutskrifter Python","N","A80")
 printUtInn(Kiosk,"Inn Kiosk Python", "A85","N")
 printUtInn(Terminal_Nets,"Terminalutskrifter Python","N","A80")
@@ -190,7 +207,7 @@ printUtInn(Kjøregodtgjørelse, "Kjøregodtgjørelse", "R3", "N")
 printUtInn(Krympefest, "Krympefest")
 printUtInn(Premier_leaugue, "Premiere Leaugue")
 printUtInn(Redaksjonen, "Redaksjonen")
-
+"""
 printUtInn(dfRemaining, "Master", "AD5", "X5")
 printUtInn(Drottningborgrussen,"Master","N","Q5")
 
@@ -200,3 +217,9 @@ printxl(Misjonsløp.ut[["Beløp ut", "Mottakernavn", "Til konto", "Numref", "Utf
 printxl(Misjonsløp.inn[["Beløp inn", "Mottakernavn", "Til konto", "Numref", "Utført dato", "Melding/KID/Fakt.nr"]], "Misjonsløp", "I10")
 printxl(Skole.inn[["Beløp inn"]], "Master", "E4", headers=False)
 printxl(Skole.ut[["Beløp ut"]], "Master", "D2", headers=False)
+
+wb.save()
+wb.close()
+app.quit()
+
+print("✅ All Excel output finished")
