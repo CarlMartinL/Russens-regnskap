@@ -79,7 +79,7 @@ Drottningborgrussen = Categories("115851", "drottningborgrussen")
 Terminal_Nets = Categories("769821|5351127", "Terminal1")
 Kjøregodtgjørelse = Categories("ikke relevant", "kjør")
 Pant = Categories("pant")
-Misjonsløp = Categories("¤¤kidnummer uvist", "løputgift|iphone|soundbox|airpods|multimedia",Undertype="OCR")
+Misjonsløp = Categories("¤¤kidnummer uvist", "løputgift|iphone|soundbox|airpods|multimedia",Undertype="Total OCR Giro")
 Skole = Categories(numrefInn="33753760001", numrefUt="41418400000|79708430000")
 Bokbind = Categories(numrefInn="702660")
 Måneskinstur = Categories("625976", "månes")
@@ -95,7 +95,7 @@ df_filtered = pd.concat([
     Kiosk.all, Isruss.all, Milkshake.all, Pant.all, Basar.all, Terminal_Nets.all,
     Drottningborgrussen.all, Måneskinstur.all, Bokbind.all, Nattcup.all, Barrista.all,
     Skole.all, Misjonsløp.all, Kjøregodtgjørelse.all, Krympefest.all, Premier_leaugue.all, Redaksjonen.all
-]).drop_duplicates()
+]).drop_duplicates(subset="Numref")
 
 
 df_remaining = df.merge(df_filtered, how='outer', indicator=True)
@@ -108,7 +108,7 @@ dfRemaining = Remaining(dfRemainingInn, dfRemainingUt)
 # -----------------------------
 # Function to write to Excel safely using xlwings
 # -----------------------------
-"""
+
 def printxl(transactions, sheetname, start_cell, filename="Regnskap/Russens Regnskap Helautomatisert.xlsx", headers=True):
     # Open Excel app
     app = xw.App(visible=False)  # Change to True if you want to see Excel
@@ -144,20 +144,6 @@ def printxl(transactions, sheetname, start_cell, filename="Regnskap/Russens Regn
     wb.close()
     app.quit()  # Close Excel app
     print(f"✅ Data written to '{filename}' → sheet '{sheetname}' starting at {start_cell}")
-"""
-def printxl(transactions, sheetname, start_cell, filename, headers=True):
-    app = xw.App(visible=False)
-    app.display_alerts = False
-
-    wb = xw.Book(filename)
-    ws = wb.sheets[sheetname] if sheetname in [s.name for s in wb.sheets] else wb.sheets.add(sheetname)
-
-    ws.range(start_cell).options(index=False, header=headers).value = transactions
-
-    wb.save()
-    wb.close()
-    app.quit()
-
 
 
 # -----------------------------
@@ -174,7 +160,7 @@ def printUtInn(Kategori, sheet, kordUt="C12", kordInn="J12"):
 # -----------------------------
 # Write all categories to Excel
 # -----------------------------
-
+"""
 printUtInn(Kiosk,"Vippsutskrifter Python","N","A80")
 printUtInn(Kiosk,"Inn Kiosk Python", "A85","N")
 printUtInn(Terminal_Nets,"Terminalutskrifter Python","N","A80")
@@ -190,7 +176,9 @@ printUtInn(Kjøregodtgjørelse, "Kjøregodtgjørelse", "R3", "N")
 printUtInn(Krympefest, "Krympefest")
 printUtInn(Premier_leaugue, "Premiere Leaugue")
 printUtInn(Redaksjonen, "Redaksjonen")
+"""
 
+print(dfRemaining.inn)
 printUtInn(dfRemaining, "Master", "AD5", "X5")
 printUtInn(Drottningborgrussen,"Master","N","Q5")
 

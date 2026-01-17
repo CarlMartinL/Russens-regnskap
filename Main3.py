@@ -211,6 +211,7 @@ printUtInn(Redaksjonen, "Redaksjonen")
 printUtInn(dfRemaining, "Master", "AD5", "X5")
 printUtInn(Drottningborgrussen,"Master","N","Q5")
 
+print(dfRemaining.inn)
 
 # Individual category prints
 printxl(Misjonsløp.ut[["Beløp ut", "Mottakernavn", "Til konto", "Numref", "Utført dato", "Melding/KID/Fakt.nr"]], "Misjonsløp", "B10")
