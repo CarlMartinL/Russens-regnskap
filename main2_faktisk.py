@@ -69,9 +69,9 @@ class Remaining:
 # -----------------------------
 # Initialize categories
 # -----------------------------
-Nattcup = Categories("26180|standinntekt", "nattcup")
-Kiosk = Categories("126635|970538", "kiosk", numrefUt="175694291|62748|172399792")
-Milkshake = Categories("625974", "milks", numrefUt="96985710000")
+Nattcup = Categories("26180|standinntekt", "nattcup|natcup")
+Kiosk = Categories("126635|970538", "kiosk", numrefUt="175694291|62748|172399792|17017973032|130692947|130691942|114592615")#2615
+Milkshake = Categories("625974", "milks", numrefUt="96985710000|17017977341")#285
 Barrista = Categories("834150", "baris|barris", numrefUt="96985720000|96985730000")
 Isruss = Categories("625973", "isrus")
 Basar = Categories("625975", "basar")
@@ -85,7 +85,7 @@ Bokbind = Categories(numrefInn="702660")
 Måneskinstur = Categories("625976", "månes")
 Krympefest = Categories("33392", "krympef")
 Premier_leaugue = Categories("723903", "Premier lea|borgenpl")
-Redaksjonen = Categories("MÅ FIKSES", "redaksjonen")
+Redaksjonen = Categories("740939", "redaksjonen")
 
 
 # -----------------------------
@@ -161,6 +161,7 @@ def printUtInn(Kategori, sheet, kordUt="C12", kordInn="J12"):
 # Write all categories to Excel
 # -----------------------------
 
+"""
 printUtInn(Kiosk,"Vippsutskrifter Python","N","A80")
 printUtInn(Kiosk,"Inn Kiosk Python", "A85","N")
 printUtInn(Terminal_Nets,"Terminalutskrifter Python","N","A80")
@@ -176,7 +177,7 @@ printUtInn(Kjøregodtgjørelse, "Kjøregodtgjørelse", "R3", "N")
 printUtInn(Krympefest, "Krympefest")
 printUtInn(Premier_leaugue, "Premiere Leaugue")
 printUtInn(Redaksjonen, "Redaksjonen")
-
+"""
 
 
 printUtInn(dfRemaining, "Master", "AD5", "X5")
@@ -190,3 +191,29 @@ printxl(Misjonsløp.ut[["Beløp ut", "Mottakernavn", "Til konto", "Numref", "Utf
 printxl(Misjonsløp.inn[["Beløp inn", "Mottakernavn", "Til konto", "Numref", "Utført dato", "Melding/KID/Fakt.nr"]], "Misjonsløp", "I10")
 printxl(Skole.inn[["Beløp inn"]], "Master", "E4", headers=False)
 printxl(Skole.ut[["Beløp ut"]], "Master", "D2", headers=False)
+
+
+
+
+##-------------------------------------------------------------------------------##
+all_categorized = pd.concat([
+    Kiosk.all, Milkshake.all, Barrista.all, Isruss.all, Basar.all,
+    Nattcup.all, Pant.all, Misjonsløp.all, Skole.all, Bokbind.all,
+    Måneskinstur.all, Krympefest.all, Premier_leaugue.all, Redaksjonen.all,
+    Drottningborgrussen.all, Terminal_Nets.all, Kjøregodtgjørelse.all
+])
+
+
+total_in_categories = len(all_categorized)
+total_in_source = len(df)
+total_remaining = len(df_remaining)  # or dfRemaining
+
+print(f"Total transactions in source:      {total_in_source}")
+print(f"Total transactions categorized:    {total_in_categories}")
+print(f"Total transactions remaining:      {total_remaining}")
+print(f"Categorized + Remaining:           {total_in_categories + total_remaining}")
+
+if total_in_categories + total_remaining == total_in_source:
+    print("✅ All transactions accounted for exactly once")
+else:
+    print(f"⚠️ WARNING: Mismatch of {total_in_source - (total_in_categories + total_remaining)} transactions!")

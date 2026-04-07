@@ -9,7 +9,7 @@ import xlwings as xw
 app = xw.App(visible=False)
 app.display_alerts = False
 
-filename = "Regnskap/Russens Regnskap Helautomatisert.xlsx"
+filename = "../Russens Regnskap Helautomatisert.xlsx"
 
 try:
     wb = xw.Book(filename)
