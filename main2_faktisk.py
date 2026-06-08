@@ -70,8 +70,8 @@ class Remaining:
 # Initialize categories
 # -----------------------------
 Nattcup = Categories("26180|standinntekt", "nattcup|natcup")
-Kiosk = Categories("126635|970538", "kiosk", numrefUt="175694291|62748|172399792|17017973032|130692947|130691942|114592615")#2615
-Milkshake = Categories("625974", "milks", numrefUt="96985710000|17017977341")#285
+Kiosk = Categories("126635|970538", "kiosk", numrefUt="175694291|62748|172399792|17017973032|130692947|114592615")#
+Milkshake = Categories("625974", "milks", numrefUt="96985710000|130691942|17017977341")#285
 Barrista = Categories("834150", "baris|barris", numrefUt="96985720000|96985730000")
 Isruss = Categories("625973", "isrus")
 Basar = Categories("625975", "basar")
@@ -86,6 +86,8 @@ Måneskinstur = Categories("625976", "månes")
 Krympefest = Categories("33392", "krympef")
 Premier_leaugue = Categories("723903", "Premier lea|borgenpl")
 Redaksjonen = Categories("740939", "redaksjonen")
+Rolle_Bryllup = Categories("38180","rolle|bryllup|brullup")
+Skolegensere = Categories("49348","skolegens")
 
 
 # -----------------------------
@@ -94,7 +96,8 @@ Redaksjonen = Categories("740939", "redaksjonen")
 df_filtered = pd.concat([
     Kiosk.all, Isruss.all, Milkshake.all, Pant.all, Basar.all, Terminal_Nets.all,
     Drottningborgrussen.all, Måneskinstur.all, Bokbind.all, Nattcup.all, Barrista.all,
-    Skole.all, Misjonsløp.all, Kjøregodtgjørelse.all, Krympefest.all, Premier_leaugue.all, Redaksjonen.all
+    Skole.all, Misjonsløp.all, Kjøregodtgjørelse.all, Krympefest.all, Premier_leaugue.all,
+    Redaksjonen.all,Rolle_Bryllup.all,Skolegensere.all
 ]).drop_duplicates()
 
 
@@ -161,7 +164,6 @@ def printUtInn(Kategori, sheet, kordUt="C12", kordInn="J12"):
 # Write all categories to Excel
 # -----------------------------
 
-"""
 printUtInn(Kiosk,"Vippsutskrifter Python","N","A80")
 printUtInn(Kiosk,"Inn Kiosk Python", "A85","N")
 printUtInn(Terminal_Nets,"Terminalutskrifter Python","N","A80")
@@ -177,7 +179,8 @@ printUtInn(Kjøregodtgjørelse, "Kjøregodtgjørelse", "R3", "N")
 printUtInn(Krympefest, "Krympefest")
 printUtInn(Premier_leaugue, "Premiere Leaugue")
 printUtInn(Redaksjonen, "Redaksjonen")
-"""
+printUtInn(Rolle_Bryllup,"Rolle Bryllup")
+printUtInn(Skolegensere,"Skolegensere")
 
 
 printUtInn(dfRemaining, "Master", "AD5", "X5")
@@ -194,13 +197,12 @@ printxl(Skole.ut[["Beløp ut"]], "Master", "D2", headers=False)
 
 
 
-
 ##-------------------------------------------------------------------------------##
 all_categorized = pd.concat([
     Kiosk.all, Milkshake.all, Barrista.all, Isruss.all, Basar.all,
     Nattcup.all, Pant.all, Misjonsløp.all, Skole.all, Bokbind.all,
     Måneskinstur.all, Krympefest.all, Premier_leaugue.all, Redaksjonen.all,
-    Drottningborgrussen.all, Terminal_Nets.all, Kjøregodtgjørelse.all
+    Drottningborgrussen.all, Terminal_Nets.all, Kjøregodtgjørelse.all,Rolle_Bryllup.all,Skolegensere.all
 ])
 
 
